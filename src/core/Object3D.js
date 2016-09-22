@@ -91,6 +91,8 @@ function Object3D() {
 
 	this.userData = {};
 
+	this.onBeforeRender = null;
+
 }
 
 Object3D.DefaultUp = new Vector3( 0, 1, 0 );
@@ -543,9 +545,11 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 
 		// update children
 
-		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
+		var children = this.children;
 
-			this.children[ i ].updateMatrixWorld( force );
+		for ( var i = 0, l = children.length; i < l; i ++ ) {
+
+			children[ i ].updateMatrixWorld( force );
 
 		}
 

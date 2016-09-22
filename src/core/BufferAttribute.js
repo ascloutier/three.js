@@ -10,7 +10,7 @@ import { _Math } from '../math/Math';
 
 function BufferAttribute( array, itemSize, normalized ) {
 
-	if ( array.buffer instanceof ArrayBuffer === false ) {
+	if ( Array.isArray( array ) ) {
 
 		throw new TypeError( 'THREE.BufferAttribute: array should be a Typed Array.' );
 
@@ -20,12 +20,13 @@ function BufferAttribute( array, itemSize, normalized ) {
 
 	this.array = array;
 	this.itemSize = itemSize;
+	this.count = array !== undefined ? array.length / itemSize : 0;
+	this.normalized = normalized === true;
 
 	this.dynamic = false;
 	this.updateRange = { offset: 0, count: - 1 };
 
 	this.version = 0;
-	this.normalized = normalized === true;
 
 }
 
@@ -34,12 +35,6 @@ BufferAttribute.prototype = {
 	constructor: BufferAttribute,
 
 	isBufferAttribute: true,
-
-	get count() {
-
-		return this.array.length / this.itemSize;
-
-	},
 
 	set needsUpdate( value ) {
 
@@ -59,6 +54,8 @@ BufferAttribute.prototype = {
 
 		this.array = new source.array.constructor( source.array );
 		this.itemSize = source.itemSize;
+		this.count = source.count;
+		this.normalized = source.normalized;
 
 		this.dynamic = source.dynamic;
 
