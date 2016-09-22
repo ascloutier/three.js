@@ -1,9 +1,9 @@
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
 import { BufferAttribute } from '../../core/BufferAttribute';
 import { WebGLGeometries } from './WebGLGeometries';
-
-/**
-* @author mrdoob / http://mrdoob.com/
-*/
 
 function WebGLObjects( gl, properties, info ) {
 
@@ -17,7 +17,7 @@ function WebGLObjects( gl, properties, info ) {
 
 		var geometry = geometries.get( object );
 
-		if ( (object.geometry && object.geometry.isGeometry) ) {
+		if ( object.geometry.isGeometry ) {
 
 			geometry.updateFromObject( object );
 
@@ -60,7 +60,7 @@ function WebGLObjects( gl, properties, info ) {
 
 	function updateAttribute( attribute, bufferType ) {
 
-		var data = ( (attribute && attribute.isInterleavedBufferAttribute) ) ? attribute.data : attribute;
+		var data = ( attribute.isInterleavedBufferAttribute ) ? attribute.data : attribute;
 
 		var attributeProperties = properties.get( data );
 
@@ -118,7 +118,7 @@ function WebGLObjects( gl, properties, info ) {
 
 	function getAttributeBuffer( attribute ) {
 
-		if ( (attribute && attribute.isInterleavedBufferAttribute) ) {
+		if ( attribute.isInterleavedBufferAttribute ) {
 
 			return properties.get( attribute.data ).__webglBuffer;
 
@@ -157,9 +157,7 @@ function WebGLObjects( gl, properties, info ) {
 				var b = array[ i + 1 ];
 				var c = array[ i + 2 ];
 
-				if ( checkEdge( edges, a, b ) ) indices.push( a, b );
-				if ( checkEdge( edges, b, c ) ) indices.push( b, c );
-				if ( checkEdge( edges, c, a ) ) indices.push( c, a );
+				indices.push( a, b, b, c, c, a );
 
 			}
 
@@ -192,38 +190,14 @@ function WebGLObjects( gl, properties, info ) {
 
 	}
 
-	function checkEdge( edges, a, b ) {
+	return {
 
-		if ( a > b ) {
+		getAttributeBuffer: getAttributeBuffer,
+		getWireframeAttribute: getWireframeAttribute,
 
-			var tmp = a;
-			a = b;
-			b = tmp;
+		update: update
 
-		}
-
-		var list = edges[ a ];
-
-		if ( list === undefined ) {
-
-			edges[ a ] = [ b ];
-			return true;
-
-		} else if ( list.indexOf( b ) === -1 ) {
-
-			list.push( b );
-			return true;
-
-		}
-
-		return false;
-
-	}
-
-	this.getAttributeBuffer = getAttributeBuffer;
-	this.getWireframeAttribute = getWireframeAttribute;
-
-	this.update = update;
+	};
 
 }
 

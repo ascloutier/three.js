@@ -280,7 +280,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 		this.computeBoundingBox();
 
-		var offset = this.boundingBox.center().negate();
+		var offset = this.boundingBox.getCenter().negate();
 
 		this.translate( offset.x, offset.y, offset.z );
 
@@ -344,19 +344,25 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 			var direct = geometry.__directGeometry;
 
-			if ( direct === undefined || geometry.elementsNeedUpdate === true ) {
+			if ( geometry.elementsNeedUpdate === true ) {
+
+				direct = undefined;
+				geometry.elementsNeedUpdate = false;
+
+			}
+
+			if ( direct === undefined ) {
 
 				return this.fromGeometry( geometry );
 
 			}
 
-			direct.verticesNeedUpdate = geometry.verticesNeedUpdate || geometry.elementsNeedUpdate;
-			direct.normalsNeedUpdate = geometry.normalsNeedUpdate || geometry.elementsNeedUpdate;
-			direct.colorsNeedUpdate = geometry.colorsNeedUpdate || geometry.elementsNeedUpdate;
-			direct.uvsNeedUpdate = geometry.uvsNeedUpdate || geometry.elementsNeedUpdate;
-			direct.groupsNeedUpdate = geometry.groupsNeedUpdate || geometry.elementsNeedUpdate;
+			direct.verticesNeedUpdate = geometry.verticesNeedUpdate;
+			direct.normalsNeedUpdate = geometry.normalsNeedUpdate;
+			direct.colorsNeedUpdate = geometry.colorsNeedUpdate;
+			direct.uvsNeedUpdate = geometry.uvsNeedUpdate;
+			direct.groupsNeedUpdate = geometry.groupsNeedUpdate;
 
-			geometry.elementsNeedUpdate = false;
 			geometry.verticesNeedUpdate = false;
 			geometry.normalsNeedUpdate = false;
 			geometry.colorsNeedUpdate = false;
@@ -614,7 +620,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 				var center = this.boundingSphere.center;
 
 				box.setFromArray( array );
-				box.center( center );
+				box.getCenter( center );
 
 				// hoping to find a boundingSphere with a radius smaller than the
 				// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
