@@ -239,6 +239,9 @@ class ThreeJsWriter(object):
             print("material: " + mat)
             self.materials.append(self._exportMaterial(mat))
 
+    # Opacity: Maya transparency is stored in the RGB channels. 0.0 means NOT transparent at all. 
+	#          1.0 means completely transparent. This is the opposite of 3JS Opacity. 
+	#          The A channel is not used for storing transparency...
     def _exportMaterial(self, mat):
         result = {
             "DbgName": mat.name(),
@@ -247,8 +250,8 @@ class ThreeJsWriter(object):
             "depthTest": True,
             "depthWrite": True,
             "shading": mat.__class__.__name__,
-            "opacity": mat.getTransparency().r,
-            "transparent": mat.getTransparency().r != 1.0,
+            "opacity": 1.0 - mat.getTransparency().r,
+            "transparent": mat.getTransparency().r != 0.0,
             "vertexColors": False
         }
         if isinstance(mat, nodetypes.Phong):
